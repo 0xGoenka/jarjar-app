@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { addRequestInterceptor } from "./interceptor";
+import { addAuthorizationInterceptor } from "./addAuthorizationInterceptor";
 
 export class ApiService {
   private readonly instance: AxiosInstance;
@@ -11,6 +13,11 @@ export class ApiService {
     );
     this.instance.defaults.baseURL = import.meta.env.VITE_RPC_URL;
     this.instance.defaults.timeout = 1500;
+  }
+
+  setBearerToken(token: string | null) {
+    if (!token) return;
+    addRequestInterceptor(this.instance, addAuthorizationInterceptor(token));
   }
 
   get<T = unknown, R = AxiosResponse<T>>(

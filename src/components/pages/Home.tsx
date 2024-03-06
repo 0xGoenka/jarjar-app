@@ -36,11 +36,11 @@ const words = [
 export const Home = () => {
   const account = useCurrentAccount();
   const { mutate: signPersonalMessage } = useSignPersonalMessage();
-  const { userService } = useServices();
+  const { userService, authService } = useServices();
 
   useEffect(() => {
     userService.setUserAccount(account);
-    userService.signFn = signPersonalMessage;
+    authService.signFn = signPersonalMessage;
   }, [account]);
 
   return (

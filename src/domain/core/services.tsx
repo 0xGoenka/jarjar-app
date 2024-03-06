@@ -4,18 +4,21 @@ import { NetworkStatusService } from "../services/networkstatus";
 import { AccountService } from "../services/account.service";
 import { TransactionService } from "../services/transactions.service";
 import { UserService } from "../services/user.service";
+import { AuthService } from "../services/auth.service";
 
 const apiService = new ApiService();
 const networkStatusService = new NetworkStatusService(apiService);
 const accountService = new AccountService(apiService);
 const transactionService = new TransactionService(apiService);
-const userService = new UserService(apiService);
+const authService = new AuthService(apiService);
+const userService = new UserService(apiService, authService);
 
 export const services = {
   networkStatusService,
   accountService,
   transactionService,
   userService,
+  authService,
 };
 
 export type Services = typeof services;
@@ -53,7 +56,6 @@ export async function initializeServices() {
 export async function resetServices() {
   return Promise.all(
     Object.values(services)
-      .filter((service) => service !== cognitoAuthService)
       .map((service) => {
         if ("reset" in service) {
           return service.reset();

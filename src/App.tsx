@@ -13,6 +13,8 @@ import {
   WalletProvider,
 } from "@mysten/dapp-kit";
 import { ToastContainer } from "react-toastify";
+import { useAuthService } from "./domain/hooks/useAuthService";
+import { Transfer } from "./components/pages/Transfer";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -22,19 +24,36 @@ const { networkConfig } = createNetworkConfig({
 const queryClient = new QueryClient();
 
 function App() {
+  const { isConnectedToJarJarRpc } = useAuthService();
+
+  if (isConnectedToJarJarRpc)
+    return (
+      <Router>
+        <QueryClientProvider client={queryClient}>
+          <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
+            <WalletProvider>
+              <div className="bg-background flex">
+                <Sidebar className="lg:block w-60" />
+                <Route path="/" exact component={Transfer} />
+              </div>
+            </WalletProvider>
+          </SuiClientProvider>
+          <ToastContainer theme="dark" />
+        </QueryClientProvider>
+      </Router>
+    );
+
   return (
-    <Router>
-      <QueryClientProvider client={queryClient}>
-        <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
-          <WalletProvider>
-            <div className="bg-background flex">
-              <Route path="/" exact component={Home} />
-            </div>
-          </WalletProvider>
-        </SuiClientProvider>
-        <ToastContainer theme="dark" />
-      </QueryClientProvider>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
+        <WalletProvider>
+          <div className="bg-background flex">
+            <Home></Home>
+          </div>
+        </WalletProvider>
+      </SuiClientProvider>
+      <ToastContainer theme="dark" />
+    </QueryClientProvider>
   );
 }
 

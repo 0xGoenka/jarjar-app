@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@mysten/dapp-kit": "^0.12.2",
     "@mysten/sui.js": "^0.50.1",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-menubar": "^1.0.4",
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",
@@ -29,11 +31,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-element-to-jsx-string": "^15.0.0",
+    "react-hook-form": "^7.51.0",
     "react-router-dom": "^5.3.4",
     "react-toastify": "^10.0.4",
     "socket.io-client": "^4.7.4",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",

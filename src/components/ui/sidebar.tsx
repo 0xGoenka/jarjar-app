@@ -12,7 +12,7 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
           <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            JarJar Explorer
+            JarJar Dashboard
           </h2>
           <div className="space-y-1">
             <Link to="/">
@@ -33,7 +33,7 @@ export function Sidebar({ className }: SidebarProps) {
                   <circle cx="12" cy="12" r="10" />
                   <polygon points="10 8 16 12 10 16 10 8" />
                 </svg>
-                Network
+                Transfer
               </Button>
             </Link>
             <Link to="/masternodes">
@@ -54,7 +54,7 @@ export function Sidebar({ className }: SidebarProps) {
                   <circle cx="12" cy="12" r="10" />
                   <polygon points="10 8 16 12 10 16 10 8" />
                 </svg>
-                Masternodes
+                Generate
               </Button>
             </Link>
             <Link to="/transactions">
@@ -102,7 +102,7 @@ export function Sidebar({ className }: SidebarProps) {
                   <rect width="7" height="7" x="14" y="14" rx="1" />
                   <rect width="7" height="7" x="3" y="14" rx="1" />
                 </svg>
-                Transactions Pool
+                App store
               </Button>
             </Link>
             <Link to="/accounts">
