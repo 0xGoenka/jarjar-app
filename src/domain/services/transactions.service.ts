@@ -1,16 +1,21 @@
-import { WritableObservable, observable } from "micro-observables";
+import { UserService } from "./user.service";
+import { observable } from "micro-observables";
 import { ApiService } from "@/domain/core/api.service";
 import io, { Socket } from "socket.io-client";
+import { toast } from "react-toastify";
+import { AxiosResponse } from "axios";
 
 export class TransactionService {
-  private apiService: ApiService;
-  public ledger_txs: WritableObservable<any> = observable([]);
-  public pooled_txs: WritableObservable<any> = observable([]);
   ws: Socket | undefined;
+  userTxsInPool = observable([]);
+  userTxsInLedger = observable([]);
 
-  constructor(apiService: ApiService) {
+  constructor(
+    private readonly apiService: ApiService,
+    private readonly userService: UserService
+  ) {
     this.apiService = apiService;
-    // this.connectWs();
+    this.connectWs();
     // this.fetchLedgerTxs();
   }
 
@@ -23,34 +28,51 @@ export class TransactionService {
       console.log("Connected to server");
     });
 
-    this.ws.on("tx_pool", (data) => {
-      console.log(`tx_pool update: ${data}`, JSON.stringify(data));
-      // @TODO: optimize by only updating the new txs
-      this.pooled_txs.set(data.txPool);
-    });
+    this.ws.on("tx_pool", this.wsUserPoolTxs.bind(this));
   }
 
-  async fetchLedgerTxs() {
+  wsUserPoolTxs(data) {
+    if (!this.userService.userSuiAccount.get()) return;
+    const userAddr = this.userService.userSuiAccount.get()?.address;
+    this.userTxsInPool.set(data.txPool.filter((tx) => tx.from === userAddr));
+  }
+
+  async fetchUserLedgerTxs() {
+    const userAccount = this.userService.userSuiAccount.get();
+
     try {
       const response = await this.apiService.get(
-        "/explorer/ledger_transactions"
+        "/transaction/ledger/from/" + userAccount?.address
       );
-      this.ledger_txs.set(response.data as any);
       console.log(response);
+      if (typeof response.data === "object")
+        this.userTxsInLedger.set(response.data as any);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async fetchPooledTxs() {
+  async pay({ to, amount }: { to: string; amount: number }) {
+    const userAccount = this.userService.userSuiAccount.get();
+    if (!userAccount) throw new Error("Invalid account");
+
     try {
-      const response = await this.apiService.get(
-        "/explorer/pooled_transactions"
+      const payRes: AxiosResponse = await this.apiService.post(
+        "/transaction/pay",
+        {
+          from: userAccount?.address,
+          to,
+          amount,
+          type: "pay",
+        }
       );
-      this.pooled_txs.set(response.data as any);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
+      console.log({ payRes });
+      if (payRes.data.error)
+        return toast.error(payRes.data.message || "Transaction failed");
+      toast.info("Transaction sent!");
+    } catch (e) {
+      console.error(e);
+      toast.error(e.message);
     }
   }
 }

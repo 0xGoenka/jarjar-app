@@ -7,11 +7,11 @@ import { UserService } from "../services/user.service";
 import { AuthService } from "../services/auth.service";
 
 const apiService = new ApiService();
-const networkStatusService = new NetworkStatusService(apiService);
-const accountService = new AccountService(apiService);
-const transactionService = new TransactionService(apiService);
 const authService = new AuthService(apiService);
 const userService = new UserService(apiService, authService);
+const networkStatusService = new NetworkStatusService(apiService);
+const accountService = new AccountService(apiService);
+const transactionService = new TransactionService(apiService, userService);
 
 export const services = {
   networkStatusService,
