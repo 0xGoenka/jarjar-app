@@ -4,6 +4,7 @@ import { ApiService } from "@/domain/core/api.service";
 import io, { Socket } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
+import axios from "axios";
 
 export class TransactionService {
   ws: Socket | undefined;
@@ -69,6 +70,47 @@ export class TransactionService {
       console.log({ payRes });
       if (payRes.data.error)
         return toast.error(payRes.data.message || "Transaction failed");
+      toast.info("Transaction sent!");
+    } catch (e) {
+      console.error(e);
+      toast.error(e.message);
+    }
+  }
+
+  async mine({
+    to,
+    amount,
+    generation_input,
+  }: {
+    to: string;
+    amount: number;
+    generation_input: object;
+  }) {
+    const userAccount = this.userService.userSuiAccount.get();
+    if (!userAccount) throw new Error("Invalid account");
+
+    try {
+      // const mineRes: AxiosResponse = await this.apiService.post(
+      //   "/transaction/mine",
+      //   {
+      //     from: userAccount?.address,
+      //     to,
+      //     amount,
+      //     type: "mine",
+      //     generation_input,
+      //     metadata: {},
+      //   }
+      // );
+      const mineRes: AxiosResponse = await axios.post(
+        "http://localhost:4000/generate",
+        {
+          generation_input,
+          txId: "tx.txId",
+        }
+      );
+      console.log({ mineRes });
+      if (mineRes.data.error)
+        return toast.error(mineRes.data.message || "Transaction failed");
       toast.info("Transaction sent!");
     } catch (e) {
       console.error(e);

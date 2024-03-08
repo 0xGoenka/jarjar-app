@@ -15,6 +15,9 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useAuthService } from "./domain/hooks/useAuthService";
 import { Transfer } from "./components/pages/Transfer";
+import { GenerateText } from "./components/pages/GenerateText";
+import { SubnetTextStatus } from "./components/pages/SubnetTextStatus";
+import { SubnetDashboard } from "./components/pages/SubnetDashboard/SubnetDashboard";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -35,6 +38,9 @@ function App() {
               <div className="bg-background flex">
                 <Sidebar className="lg:block w-60" />
                 <Route path="/" exact component={Transfer} />
+                {/* <Route path="/generate_llm" exact component={SubnetDashboard} /> */}
+                <Route path="/generate_llm" exact component={GenerateText} />
+                <Route path="/generate_llm:id" exact component={GenerateText} />
               </div>
             </WalletProvider>
           </SuiClientProvider>

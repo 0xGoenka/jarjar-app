@@ -11,8 +11,8 @@ export function Sidebar({ className }: SidebarProps) {
     <div className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            JarJar Dashboard
+          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-left">
+            JarJar D/App
           </h2>
           <div className="space-y-1">
             <Link to="/">
@@ -36,9 +36,9 @@ export function Sidebar({ className }: SidebarProps) {
                 Transfer
               </Button>
             </Link>
-            <Link to="/masternodes">
+            <Link to="/generate_llm">
               <Button
-                variant={pathname === "/masternodes" ? "secondary" : "ghost"}
+                variant={pathname === "/generate_llm" ? "secondary" : "ghost"}
                 className="w-full justify-start"
               >
                 <svg
@@ -54,7 +54,7 @@ export function Sidebar({ className }: SidebarProps) {
                   <circle cx="12" cy="12" r="10" />
                   <polygon points="10 8 16 12 10 16 10 8" />
                 </svg>
-                Generate
+                Generate Text
               </Button>
             </Link>
             <Link to="/transactions">
