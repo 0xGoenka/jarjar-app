@@ -32,6 +32,10 @@ export const GenerateText = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const generation_input = {
+      in_1ktoken_price: 1,
+      out_1ktoken_price: 1,
+      valid_until_timestamp: "sdsd",
+      submited_timestamp: "dsd",
       messages: [
         {
           role: "system",
