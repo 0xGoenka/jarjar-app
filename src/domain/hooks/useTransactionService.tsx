@@ -9,3 +9,6 @@ export const useTransactionService = () => ({
     useServices().transactionService.userTxsInPool
   ),
 });
+
+export const useTransactionResult = () =>
+  useObservable(useServices().transactionService.result);

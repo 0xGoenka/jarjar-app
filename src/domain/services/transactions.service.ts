@@ -7,29 +7,81 @@ import { AxiosResponse } from "axios";
 import axios from "axios";
 
 export class TransactionService {
-  ws: Socket | undefined;
+  rpc_ws: Socket | undefined;
+  masternode_ws: Socket | undefined;
   userTxsInPool = observable([]);
   userTxsInLedger = observable([]);
+  isGenerating = false;
+  masternodeWsUrl = "http://localhost:4002";
+  result = observable("");
 
   constructor(
     private readonly apiService: ApiService,
     private readonly userService: UserService
   ) {
     this.apiService = apiService;
-    this.connectWs();
+    this.connectRpcWs();
     // this.fetchLedgerTxs();
   }
 
-  private connectWs() {
+  private connectRpcWs() {
     const rpc_ws_url: string = import.meta.env.VITE_WS_RPC_URL;
 
-    this.ws = io(rpc_ws_url);
+    this.rpc_ws = io(rpc_ws_url);
 
-    this.ws.on("connect", () => {
+    this.rpc_ws.on("connect", () => {
       console.log("Connected to server");
     });
 
-    this.ws.on("tx_pool", this.wsUserPoolTxs.bind(this));
+    this.rpc_ws.on("tx_pool", this.wsUserPoolTxs.bind(this));
+  }
+
+  private connectMasternodeWs() {
+    const rpc_ws_url: string = import.meta.env.VITE_WS_RPC_URL;
+
+    this.masternode_ws = io(this.masternodeWsUrl);
+
+    this.masternode_ws.on("connect", () => {
+      console.log("Connected to server, linking with txId...");
+      this.linkTxIdwithClientId("60991854-0bf1-4f84-a8c2-a0b23cfd318dtxId");
+    });
+
+    this.masternode_ws.on("disconnect_client", () => {
+      console.log("Disconnected from server");
+      toast.info("Disconnected from masternode ws");
+      this.masternode_ws?.disconnect();
+    });
+
+    // this.masternode_ws.on("status", this.listenToMasternodeWs.bind(this));
+  }
+
+  private linkTxIdwithClientId(txId: string) {
+    this.masternode_ws?.emit("link_txid_with_clientid", txId, (response) => {
+      console.log({ responseLinkWithClient: response }); // ok
+    });
+    this.masternode_ws?.on(
+      "stream_response",
+      this.processMasternodeResponse.bind(this)
+    );
+  }
+
+  private disconnectMasternodeWs() {
+    if (this.masternode_ws) {
+      this.masternode_ws?.disconnect();
+    } else {
+      toast.error("Disconnect from masternode ws failed, undefined");
+    }
+  }
+
+  // private listenToMasternodeWs(data) {
+  //   console.log({ data });
+  //   this.masternode_ws?.on("status", this.processMasternodeResponse.bind(this));
+  // }
+
+  private processMasternodeResponse(data) {
+    console.log({ data });
+    const result = this.result.get();
+    this.result.set(result + data.chunk);
   }
 
   wsUserPoolTxs(data) {
@@ -105,13 +157,15 @@ export class TransactionService {
         "http://localhost:4000/generate",
         {
           generation_input,
-          txId: "tx.txId",
+          txId: "60991854-0bf1-4f84-a8c2-a0b23cfd318dtxId",
         }
       );
       console.log({ mineRes });
       if (mineRes.data.error)
         return toast.error(mineRes.data.message || "Transaction failed");
       toast.info("Transaction sent!");
+      this.connectMasternodeWs();
+      this.result.set("");
     } catch (e) {
       console.error(e);
       toast.error(e.message);

@@ -13,6 +13,7 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useServices } from "@/domain/core/services";
+import { useTransactionResult } from "@/domain/hooks/useTransactionService";
 
 const formSchema = z.object({
   system: z.string().min(10).max(4000),
@@ -21,6 +22,7 @@ const formSchema = z.object({
 
 export const GenerateText = () => {
   const { transactionService } = useServices();
+  const result = useTransactionResult();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,10 +34,11 @@ export const GenerateText = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const generation_input = {
+      order_type: "market",
       in_1ktoken_price: 1,
       out_1ktoken_price: 1,
-      valid_until_timestamp: "sdsd",
-      submited_timestamp: "dsd",
+      submited_timestamp: new Date().toISOString(),
+      type: "market",
       messages: [
         {
           role: "system",
@@ -106,6 +109,9 @@ export const GenerateText = () => {
           </Button>
         </form>
       </Form>
+      <div className="m-[10px] overflow-hidden leading-9">
+        <div className="text-left w-full wrap">{result}</div>
+      </div>
     </div>
   );
 };
