@@ -1,4 +1,3 @@
-import { ApiService } from "./../core/api.service";
 import { observable } from "micro-observables";
 import { AuthService } from "./auth.service";
 import type { WalletAccount } from "@mysten/wallet-standard";
@@ -6,10 +5,7 @@ import type { WalletAccount } from "@mysten/wallet-standard";
 export class UserService {
   userSuiAccount = observable<WalletAccount | null>(null);
 
-  constructor(
-    private readonly apiService: ApiService,
-    private readonly authService: AuthService
-  ) {
+  constructor(private readonly authService: AuthService) {
     this.userSuiAccount.subscribe((account) => {
       if (account) {
         this.connect();

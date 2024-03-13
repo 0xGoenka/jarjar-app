@@ -5,4 +5,5 @@ export const useAuthService = () => ({
   isConnectedToJarJarRpc: useObservable(
     useServices().authService.isConnectedToJarJarRpc
   ),
+  account: useObservable(useServices().authService.account),
 });

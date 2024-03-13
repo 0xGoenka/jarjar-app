@@ -27,7 +27,7 @@ const { networkConfig } = createNetworkConfig({
 const queryClient = new QueryClient();
 
 function App() {
-  const { isConnectedToJarJarRpc } = useAuthService();
+  const { isConnectedToJarJarRpc, account } = useAuthService();
 
   if (isConnectedToJarJarRpc)
     return (
@@ -35,6 +35,9 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
             <WalletProvider>
+              <div className="text-right w-full">
+                <span className="text-xl">{account?.balance}</span> $JARJAR
+              </div>
               <div className="bg-background flex">
                 <Sidebar className="lg:block w-60" />
                 <Route path="/" exact component={Transfer} />

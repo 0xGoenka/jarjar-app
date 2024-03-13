@@ -1,12 +1,14 @@
-import { observable } from "micro-observables";
-import { ApiService } from "../core/api.service";
+import { Observable, WritableObservable, observable } from "micro-observables";
 import { toast } from "react-toastify";
+import { AuthApi } from "./auth.api";
+import type { WalletAccount } from "@mysten/wallet-standard";
 
 export class AuthService {
   signFn: any;
   bearerToken: string | null = null;
   isConnectedToJarJarRpc = observable(false);
-  constructor(private readonly apiService: ApiService) {}
+  account: WritableObservable<null | object> = observable(null);
+  constructor(private readonly authApi: AuthApi) {}
 
   async signPersonalMessage(messageStr: string) {
     if (!this.signFn) throw new Error("Invalid sign function");
@@ -26,22 +28,21 @@ export class AuthService {
     return signature;
   }
 
-  async connect(userSuiAccount: any) {
+  async connect(userSuiAccount: WalletAccount | null) {
     if (!userSuiAccount) throw new Error("Invalid account");
 
     try {
-      const message = await this.apiService.get("/auth/generateSignInMessage");
-      console.log({ message });
-      const signature = await this.signPersonalMessage(message.data as string);
-      console.log({ signature });
+      const message = await this.authApi.generateSignInMessage();
+      const signature = await this.signPersonalMessage(message as string);
+      const publicKey = userSuiAccount.address;
       // below should return token and access to the app / wallet
-      const connectRes = await this.apiService.post("/auth/connect", {
+      const connectRes = await this.authApi.connect(
         signature,
-        message: message.data,
-        publicKey: userSuiAccount?.address || "",
-      });
-      this.bearerToken = connectRes.data.access_token;
-      this.apiService.setBearerToken(this.bearerToken);
+        message,
+        publicKey
+      );
+      this.bearerToken = connectRes.access_token;
+      this.account.set(connectRes.account);
       this.isConnectedToJarJarRpc.set(true);
       toast.success("Ownership Approved!");
     } catch (e) {
