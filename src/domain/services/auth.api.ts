@@ -1,8 +1,24 @@
 import { ApiService } from "../core/api.service";
 
+export enum E_AccountType {
+  user = "user",
+  system = "system",
+  bridge = "bridge",
+  burn = "burn",
+  miner = "miner",
+  masternode = "masternode",
+}
+
+export type T_Account = {
+  pubkey: string;
+  type: E_AccountType;
+  metadata: object;
+  balance: number;
+};
+
 type AuthConnectResponse = {
   access_token: string;
-  account: any;
+  account: T_Account;
 };
 
 export class AuthApi {
@@ -14,12 +30,21 @@ export class AuthApi {
   }
 
   async connect(signature: string, message: string, publicKey: string) {
-    const res = await this.apiService.post("/auth/connect", {
-      signature,
-      message,
-      publicKey,
-    });
-    this.apiService.setBearerToken(res.data.access_token);
-    return res.data as AuthConnectResponse;
+    const res: { data: AuthConnectResponse } = await this.apiService.post(
+      "/auth/connect",
+      {
+        signature,
+        message,
+        publicKey,
+      }
+    );
+    this.setBearerToken(res.data.access_token);
+    return res.data;
+  }
+
+  setBearerToken(token: string | null) {
+    if (!token) return;
+    localStorage.setItem("access_token", token);
+    this.apiService.setBearerToken(token);
   }
 }

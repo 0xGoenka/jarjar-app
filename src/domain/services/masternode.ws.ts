@@ -38,7 +38,7 @@ export class MasternodeWS {
     );
   }
 
-  private processMasternodeResponse(data) {
+  private processMasternodeResponse(data: { chunk: string }) {
     console.log({ data });
     const result = this.result.get();
     this.result.set(result + data.chunk);

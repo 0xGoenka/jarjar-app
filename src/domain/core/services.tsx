@@ -8,17 +8,20 @@ import { AuthService } from "../services/auth.service";
 import { AuthApi } from "../services/auth.api";
 import { MasternodeWS } from "../services/masternode.ws";
 import { TransactionApi } from "../services/transactions.api";
+import { RpcWS } from "../services/rpc.ws";
+import { UserApi } from "../services/user.api";
 
 const apiService = new ApiService();
 const authApi = new AuthApi(apiService);
 const authService = new AuthService(authApi);
-const userService = new UserService(authService);
+const userApi = new UserApi(apiService);
+const userService = new UserService(authService, userApi);
 const networkStatusService = new NetworkStatusService(apiService);
 const accountService = new AccountService(apiService);
 const masternodeWs = new MasternodeWS();
+const rpcWs = new RpcWS(userService);
 const transactionApi = new TransactionApi(apiService);
 const transactionService = new TransactionService(
-  apiService,
   userService,
   masternodeWs,
   transactionApi
@@ -31,6 +34,7 @@ export const services = {
   userService,
   authService,
   masternodeWs,
+  rpcWs,
 };
 
 export type Services = typeof services;

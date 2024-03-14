@@ -1,10 +1,9 @@
 import { UserService } from "./user.service";
 import { observable } from "micro-observables";
-import { ApiService } from "@/domain/core/api.service";
 import { Socket } from "socket.io-client";
 import { toast } from "react-toastify";
 import { MasternodeWS } from "./masternode.ws";
-import { TransactionApi } from "./transactions.api";
+import { Transaction, TransactionApi } from "./transactions.api";
 
 export type T_Mine = {
   to: string;
@@ -19,42 +18,35 @@ export type T_Pay = {
 
 export class TransactionService {
   rpc_ws: Socket | undefined;
-  userTxsInLedger = observable([]);
+  userTxsInLedger = observable<Transaction[]>([]);
 
   constructor(
-    private readonly apiService: ApiService,
     private readonly userService: UserService,
     private readonly masternodeWs: MasternodeWS,
     private readonly transactionApi: TransactionApi
-  ) {
-    this.apiService = apiService;
-  }
+  ) {}
 
   async fetchUserLedgerTxs() {
-    const userAccount = this.userService.userSuiAccount.get();
+    const userAccount = this.userService.account.get();
+
+    if (!userAccount) throw new Error("Invalid account");
 
     try {
-      const response = await this.apiService.get(
-        "/transaction/ledger/from/" + userAccount?.address
+      const history = await this.transactionApi.getUserTxHistory(
+        userAccount.pubkey
       );
-      console.log(response);
-      if (typeof response.data === "object")
-        this.userTxsInLedger.set(response.data as any);
+      this.userTxsInLedger.set(history);
     } catch (error) {
       console.error(error);
     }
   }
 
   async pay({ to, amount }: T_Pay) {
-    const userAccount = this.userService.userSuiAccount.get();
+    const userAccount = this.userService.account.get();
     if (!userAccount) throw new Error("Invalid account");
 
     try {
-      const pay = await this.transactionApi.pay(
-        userAccount.address,
-        to,
-        amount
-      );
+      const pay = await this.transactionApi.pay(userAccount.pubkey, to, amount);
       if (pay.error) return toast.error(pay.message);
       toast.info("Transaction sent successfully!");
     } catch (e) {
@@ -69,12 +61,12 @@ export class TransactionService {
   }
 
   async mine({ to, amount, generation_input }: T_Mine) {
-    const userAccount = this.userService.userSuiAccount.get();
+    const userAccount = this.userService.account.get();
     if (!userAccount) throw new Error("Invalid account");
 
     try {
       const mine = await this.transactionApi.mine(
-        userAccount.address,
+        userAccount.pubkey,
         to,
         amount,
         generation_input

@@ -7,10 +7,6 @@ export class ApiService {
 
   constructor() {
     this.instance = axios.create();
-    console.log(
-      "Initializing ApiService with RPC_URL",
-      import.meta.env.VITE_RPC_URL
-    );
     this.instance.defaults.baseURL = import.meta.env.VITE_RPC_URL;
     this.instance.defaults.timeout = 1500;
   }

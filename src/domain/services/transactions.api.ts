@@ -46,4 +46,11 @@ export class TransactionApi {
     });
     return res.data as { error: boolean; message: string; txId: string };
   }
+
+  async getUserTxHistory(address: string) {
+    const res = await this.apiService.get(
+      "/transaction/ledger/from/" + address
+    );
+    return res.data as Transaction[];
+  }
 }

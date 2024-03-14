@@ -16,8 +16,7 @@ import { ToastContainer } from "react-toastify";
 import { useAuthService } from "./domain/hooks/useAuthService";
 import { Transfer } from "./components/pages/Transfer";
 import { GenerateText } from "./components/pages/GenerateText";
-import { SubnetTextStatus } from "./components/pages/SubnetTextStatus";
-import { SubnetDashboard } from "./components/pages/SubnetDashboard/SubnetDashboard";
+import { useUserService } from "./domain/hooks/useUserService";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -27,7 +26,8 @@ const { networkConfig } = createNetworkConfig({
 const queryClient = new QueryClient();
 
 function App() {
-  const { isConnectedToJarJarRpc, account } = useAuthService();
+  const { isConnectedToJarJarRpc } = useAuthService();
+  const { account } = useUserService();
 
   if (isConnectedToJarJarRpc)
     return (
