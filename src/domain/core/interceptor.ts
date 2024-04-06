@@ -10,6 +10,7 @@ export function addRequestInterceptor(
   interceptor: Interceptor<AxiosRequestConfig>
 ): number {
   return axiosInstance.interceptors.request.use(
+    //@ts-expect-error-file
     interceptor.onFulfilled,
     interceptor.onRejected
   );

@@ -15,6 +15,8 @@ export type Transaction = {
   generation_input: object;
   metadata: object;
   private_metadata: object;
+  timestamp: number;
+  status: string;
 };
 
 export class TransactionApi {
