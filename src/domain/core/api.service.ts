@@ -30,7 +30,7 @@ export class ApiService {
       },
       (error) => {
         // If the error status is 401 (Unauthorized), you can handle invalid token here
-        if (error.response.status === 401) {
+        if (error.response?.status && error.response.status === 401) {
           // Clear your token here
           // For example, if you are using localStorage for token storage
           console.log("Unauthorized");
