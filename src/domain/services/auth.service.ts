@@ -23,7 +23,7 @@ export class AuthService {
       this.authApi.setBearerToken(bearerFromStorage);
       this.isConnectedToJarJarRpc.set(true);
     }
-    window.addEventListener("logout", (e) => {
+    window.addEventListener("logout", () => {
       this.isConnectedToJarJarRpc.set(false);
     });
   }
