@@ -11,7 +11,9 @@ export type Transaction = {
   from: string;
   to: string;
   amount: number;
+  status: string;
   type: E_TransactionType;
+  timestamp: string;
   generation_input: object;
   metadata: object;
   private_metadata: object;

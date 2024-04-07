@@ -20,10 +20,6 @@ export class UserService {
         this.disconnect();
       }
     });
-
-    setInterval(() => {
-      this.fetchAccount();
-    }, 1000);
   }
 
   setUserAccount(account: WalletAccount | null) {

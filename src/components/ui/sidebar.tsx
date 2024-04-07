@@ -15,9 +15,9 @@ export function Sidebar({ className }: SidebarProps) {
             JarJar D/App
           </h2>
           <div className="space-y-1">
-            <Link to="/">
+            <Link to="/transfer">
               <Button
-                variant={pathname === "/" ? "secondary" : "ghost"}
+                variant={pathname === "/transfer" ? "secondary" : "ghost"}
                 className="w-full justify-start"
               >
                 <svg

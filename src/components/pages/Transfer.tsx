@@ -39,7 +39,7 @@ const formSchema = z.object({
 });
 
 export const Transfer = () => {
-  const { transactionService } = useServices();
+  const { transactionService, userService } = useServices();
 
   const { user_ledger_txs } = useTransactionService();
 
@@ -62,6 +62,9 @@ export const Transfer = () => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     transactionService.pay(values);
+    setTimeout(() => {
+      userService.fetchAccount();
+    }, 1000);
     console.log(values);
   }
 
@@ -116,7 +119,7 @@ export const Transfer = () => {
       <TooltipProvider>
         <div className="w-full">
           <div className=" h-20 w-full">
-            <h1 className="text-3xl">Transactions</h1>
+            <h1 className="text-3xl">Transactions history</h1>
           </div>
           <Table>
             <TableCaption>A list of recent user Txs. (max 10)</TableCaption>

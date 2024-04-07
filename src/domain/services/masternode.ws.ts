@@ -4,7 +4,7 @@ import { observable } from "micro-observables";
 
 export class MasternodeWS {
   masternode_ws: Socket | undefined;
-  isGenerating = false;
+  isGenerating = observable(false);
   masternodeWsUrl = "http://localhost:4002";
   result = observable("");
 
@@ -23,12 +23,18 @@ export class MasternodeWS {
       console.log("Disconnected from server");
       toast.info("Disconnected from masternode ws");
       this.masternode_ws?.disconnect();
+      this.isGenerating.set(false);
+    });
+
+    this.masternode_ws.on("status", (e) => {
+      console.log({ e });
     });
 
     // this.masternode_ws.on("status", this.listenToMasternodeWs.bind(this));
   }
 
   private linkTxIdwithClientId(txId: string) {
+    this.isGenerating.set(true);
     if (this.masternode_ws === undefined) throw new Error("WS not connected");
 
     this.masternode_ws.emit("link_txid_with_clientid", txId);
