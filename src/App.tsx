@@ -1,6 +1,6 @@
 import "./App.css";
 import "@mysten/dapp-kit/dist/index.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { Sidebar } from "./components/ui/sidebar";
 import { Home } from "./components/pages/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -17,8 +17,9 @@ import { useAuthService } from "./domain/hooks/useAuthService";
 import { Transfer } from "./components/pages/Transfer";
 import { GenerateText } from "./components/pages/GenerateText";
 import { useUserService } from "./domain/hooks/useUserService";
-import { Menu } from "@radix-ui/react-menubar";
 import { JarJarMenu } from "./components/ui/menu";
+import { useEffect } from "react";
+import { useServices } from "./domain/core/services";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -30,6 +31,11 @@ const queryClient = new QueryClient();
 function App() {
   const { isConnectedToJarJarRpc } = useAuthService();
   const { account } = useUserService();
+  const { userService } = useServices();
+
+  useEffect(() => {
+    userService.fetchAccount();
+  }, [userService]);
 
   if (isConnectedToJarJarRpc)
     return (
@@ -43,7 +49,8 @@ function App() {
               <div className="bg-background flex">
                 <JarJarMenu />
                 <Sidebar className="lg:block w-60" />
-                <Route path="/" exact component={Transfer} />
+                <Redirect exact from="/" to="transfer" />
+                <Route path="/transfer" exact component={Transfer} />
                 {/* <Route path="/generate_llm" exact component={SubnetDashboard} /> */}
                 <Route path="/generate_llm" exact component={GenerateText} />
                 <Route path="/generate_llm:id" exact component={GenerateText} />

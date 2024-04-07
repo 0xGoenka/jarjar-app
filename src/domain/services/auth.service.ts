@@ -3,25 +3,29 @@ import { toast } from "react-toastify";
 import { AuthApi } from "./auth.api";
 import type { WalletAccount } from "@mysten/wallet-standard";
 
-export class AuthService {
-  signFn:
-    | undefined
-    | ((
-        params: object,
-        callbacks: {
-          onSuccess: (result: { signature: string }) => void;
-          onError: (error: Error) => void;
-        }
-      ) => Promise<void>);
+export type T_signFn =
+  | undefined
+  | ((
+      params: object,
+      callbacks: {
+        onSuccess: (result: { signature: string }) => void;
+        onError: (error: Error) => void;
+      }
+    ) => Promise<void>);
 
-  bearerToken: string | null = null;
+export class AuthService {
+  signFn: T_signFn;
   isConnectedToJarJarRpc = observable(false);
+
   constructor(private readonly authApi: AuthApi) {
     const bearerFromStorage = localStorage.getItem("access_token");
     if (bearerFromStorage) {
       this.authApi.setBearerToken(bearerFromStorage);
       this.isConnectedToJarJarRpc.set(true);
     }
+    window.addEventListener("logout", () => {
+      this.isConnectedToJarJarRpc.set(false);
+    });
   }
 
   async signPersonalMessage(messageStr: string) {
@@ -52,7 +56,6 @@ export class AuthService {
       const publicKey = userSuiAccount.address;
       // below should return token and access to the app / wallet
       const connect = await this.authApi.connect(signature, message, publicKey);
-      this.bearerToken = connect.access_token;
       this.isConnectedToJarJarRpc.set(true);
       toast.success("Ownership Approved!");
       return connect;

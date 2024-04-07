@@ -14,6 +14,8 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useServices } from "@/domain/core/services";
 import { useTransactionResult } from "@/domain/hooks/useTransactionService";
+import useKeypress from "react-use-keypress";
+import { useMasternodeWsService } from "@/domain/hooks/useMasternodeWsService";
 
 const formSchema = z.object({
   system: z.string().min(10).max(4000),
@@ -21,8 +23,9 @@ const formSchema = z.object({
 });
 
 export const GenerateText = () => {
-  const { transactionService } = useServices();
+  const { transactionService, userService } = useServices();
   const result = useTransactionResult();
+  const { isGenerating } = useMasternodeWsService();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,6 +33,14 @@ export const GenerateText = () => {
         "You are a Blockchain Development Tutor. Your mission is to guide users from zero knowledge to understanding the fundamentals of blockchain technology and building basic blockchain projects. Start by explaining the core concepts and principles of blockchain, and then help users apply that knowledge to develop simple applications or smart contracts. Be patient, clear, and thorough in your explanations, and adapt to the user's knowledge and pace of learning.",
       user: "",
     },
+  });
+
+  useKeypress("Enter", () => {
+    // Do something when the user has pressed the Escape key
+    onSubmit(form.getValues());
+    setTimeout(() => {
+      userService.fetchAccount();
+    }, 1000);
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -56,6 +67,7 @@ export const GenerateText = () => {
       generation_input,
     });
     console.log({ generation_input });
+    form.reset();
   }
 
   return (
@@ -110,7 +122,9 @@ export const GenerateText = () => {
         </form>
       </Form>
       <div className="m-[10px] overflow-hidden leading-9">
-        <div className="text-left w-full wrap">{result}</div>
+        <div className="text-left w-full wrap">
+          {isGenerating && result.length === 0 ? "Loading ..." : result}
+        </div>
       </div>
     </div>
   );

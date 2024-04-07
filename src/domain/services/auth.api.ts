@@ -45,6 +45,5 @@ export class AuthApi {
   setBearerToken(token: string | null) {
     if (!token) return;
     localStorage.setItem("access_token", token);
-    this.apiService.setBearerToken(token);
   }
 }
