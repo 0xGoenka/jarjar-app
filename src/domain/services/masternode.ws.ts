@@ -5,7 +5,7 @@ import { observable } from "micro-observables";
 export class MasternodeWS {
   masternode_ws: Socket | undefined;
   isGenerating = observable(false);
-  masternodeWsUrl = "https://jarjar-masternode.onrender.com:4002";
+  masternodeWsUrl = "jarjar-masternode.onrender.com";
   result = observable("");
 
   constructor() {}
