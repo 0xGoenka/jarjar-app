@@ -17,6 +17,8 @@ import { useAuthService } from "./domain/hooks/useAuthService";
 import { Transfer } from "./components/pages/Transfer";
 import { GenerateText } from "./components/pages/GenerateText";
 import { useUserService } from "./domain/hooks/useUserService";
+import { Menu } from "@radix-ui/react-menubar";
+import { JarJarMenu } from "./components/ui/menu";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -39,6 +41,7 @@ function App() {
                 <span className="text-xl">{account?.balance}</span> $JARJAR
               </div>
               <div className="bg-background flex">
+                <JarJarMenu />
                 <Sidebar className="lg:block w-60" />
                 <Route path="/" exact component={Transfer} />
                 {/* <Route path="/generate_llm" exact component={SubnetDashboard} /> */}
