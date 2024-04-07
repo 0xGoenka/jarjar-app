@@ -40,7 +40,8 @@ export const Home = () => {
 
   useEffect(() => {
     userService.setUserAccount(account);
-    authService.signFn = signPersonalMessage;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    authService.signFn = signPersonalMessage as any;
   }, [account]);
 
   return (

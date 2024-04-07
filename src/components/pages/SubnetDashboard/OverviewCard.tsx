@@ -9,7 +9,8 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 
-const data = [];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const data: any[] = [];
 
 for (let i = 1; i < 24; i++) {
   data.push({
@@ -53,7 +54,7 @@ type OverviewCardProps = {
   inference: number;
 };
 
-export const OverviewCard = ({ title, inference }) => {
+export const OverviewCard = ({ title, inference }: OverviewCardProps) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
       <Card className="col-span-4">

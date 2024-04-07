@@ -60,7 +60,7 @@ export class AuthService {
       toast.success("Ownership Approved!");
       return connect;
     } catch (e) {
-      toast.error(e.toString());
+      toast.error(e?.toString());
     }
   }
 }

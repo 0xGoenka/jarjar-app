@@ -57,26 +57,26 @@ export function useServices(): Services {
   return services;
 }
 
-export async function initializeServices() {
-  return Promise.all(
-    Object.values(services)
-      .map((service) => {
-        if ("init" in service) {
-          return service.init();
-        }
-      })
-      .filter(Boolean)
-  );
-}
+// export async function initializeServices() {
+//   return Promise.all(
+//     Object.values(services)
+//       .map((service) => {
+//         // if ("init" in service) {
+//         //   return service.init();
+//         // }
+//       })
+//       .filter(Boolean)
+//   );
+// }
 
 export async function resetServices() {
-  return Promise.all(
-    Object.values(services)
-      .map((service) => {
-        if ("reset" in service) {
-          return service.reset();
-        }
-      })
-      .filter(Boolean)
-  );
+  // return Promise.all(
+  //   Object.values(services)
+  //     .map((service) => {
+  //       if ("reset" in service) {
+  //         return service.reset();
+  //       }
+  //     })
+  //     .filter(Boolean)
+  // );
 }
