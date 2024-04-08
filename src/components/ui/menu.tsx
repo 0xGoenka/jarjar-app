@@ -1,10 +1,4 @@
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarItem,
-  MenubarContent,
-} from "@/components/ui/menubar";
+import { Menubar, MenubarMenu } from "@/components/ui/menubar";
 import { useUserService } from "@/domain/hooks/useUserService";
 import { Link } from "react-router-dom";
 import { Button } from "./button";
