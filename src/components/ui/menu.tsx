@@ -8,7 +8,7 @@ export const JarJarMenu = () => {
 
   return (
     <Menubar>
-      <h2 className="ml-2 text-lg font-semibold tracking-tight text-left w-[250px]">
+      <h2 className="hidden md:block ml-2 text-lg font-semibold tracking-tight text-left w-[250px]">
         JarJar D/App
       </h2>
       <MenubarMenu>
@@ -22,7 +22,9 @@ export const JarJarMenu = () => {
           <Button variant="ghost">Transactions</Button>
         </Link>
       </MenubarMenu>
-      <div className="text-right w-full pr-2">{account?.balance} $JARJAR</div>
+      <div className="hidden md:block text-right w-full pr-2">
+        {account?.balance} $JARJAR
+      </div>
     </Menubar>
   );
 };
