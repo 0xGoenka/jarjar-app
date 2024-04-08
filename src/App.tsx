@@ -30,7 +30,6 @@ const queryClient = new QueryClient();
 
 function App() {
   const { isConnectedToJarJarRpc } = useAuthService();
-  const { account } = useUserService();
   const { userService } = useServices();
 
   useEffect(() => {
@@ -43,12 +42,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
             <WalletProvider>
-              <div className="text-right w-full">
-                <span className="text-xl">{account?.balance}</span> $JARJAR
+              <div className="my-3">
+                <JarJarMenu />
               </div>
               <div className="bg-background flex">
-                <JarJarMenu />
-                <Sidebar className="lg:block w-60" />
+                {/* <Sidebar className="lg:block w-60" /> */}
                 <Redirect exact from="/" to="transfer" />
                 <Route path="/transfer" exact component={Transfer} />
                 {/* <Route path="/generate_llm" exact component={SubnetDashboard} /> */}
