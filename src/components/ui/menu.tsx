@@ -12,11 +12,14 @@ export const JarJarMenu = () => {
         JarJar D/App
       </h2>
       <MenubarMenu>
+        {/* <Link to="/appstore">
+          <Button variant="ghost">App Store</Button>
+        </Link> */}
+        <Link to="/chat">
+          <Button variant="ghost">Chat</Button>
+        </Link>
         <Link to="/transfer">
           <Button variant="ghost">Transfer</Button>
-        </Link>
-        <Link to="/generate_llm">
-          <Button variant="ghost">Generate</Button>
         </Link>
         <Link to="/transactions">
           <Button variant="ghost">Transactions</Button>

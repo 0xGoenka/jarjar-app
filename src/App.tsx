@@ -1,7 +1,6 @@
 import "./App.css";
 import "@mysten/dapp-kit/dist/index.css";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { Home } from "./components/pages/Home";
+import { LandingPage } from "./components/pages/LandingPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getFullnodeUrl } from "@mysten/sui.js/client";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,11 +12,7 @@ import {
 } from "@mysten/dapp-kit";
 import { ToastContainer } from "react-toastify";
 import { useAuthService } from "./domain/hooks/useAuthService";
-import { Transfer } from "./components/pages/Transfer";
-import { GenerateText } from "./components/pages/GenerateText";
-import { JarJarMenu } from "./components/ui/menu";
-import { useEffect } from "react";
-import { useServices } from "./domain/core/services";
+import { Navigator } from "./Navigator";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -28,42 +23,15 @@ const queryClient = new QueryClient();
 
 function App() {
   const { isConnectedToJarJarRpc } = useAuthService();
-  const { userService } = useServices();
 
-  useEffect(() => {
-    userService.fetchAccount();
-  }, [userService]);
-
-  if (isConnectedToJarJarRpc)
-    return (
-      <Router>
-        <QueryClientProvider client={queryClient}>
-          <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
-            <WalletProvider>
-              <div className="my-3">
-                <JarJarMenu />
-              </div>
-              <div className="bg-background flex">
-                {/* <Sidebar className="lg:block w-60" /> */}
-                <Redirect exact from="/" to="transfer" />
-                <Route path="/transfer" exact component={Transfer} />
-                {/* <Route path="/generate_llm" exact component={SubnetDashboard} /> */}
-                <Route path="/generate_llm" exact component={GenerateText} />
-                <Route path="/generate_llm:id" exact component={GenerateText} />
-              </div>
-            </WalletProvider>
-          </SuiClientProvider>
-          <ToastContainer theme="dark" />
-        </QueryClientProvider>
-      </Router>
-    );
+  if (isConnectedToJarJarRpc) return <Navigator />;
 
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
         <WalletProvider>
           <div className="bg-background flex">
-            <Home></Home>
+            <LandingPage />
           </div>
         </WalletProvider>
       </SuiClientProvider>

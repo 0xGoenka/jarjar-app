@@ -46,7 +46,12 @@ export class TransactionApi {
       type: E_TransactionType.mine,
       metadata: {},
     });
-    return res.data as { error: boolean; message: string; txId: string };
+    return res.data as {
+      error: boolean;
+      message: string;
+      txId: string;
+      ws_public_url: string;
+    };
   }
 
   async getUserTxHistory(address: string) {

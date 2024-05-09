@@ -33,7 +33,7 @@ const words = [
   },
 ];
 
-export const Home = () => {
+export const LandingPage = () => {
   const account = useCurrentAccount();
   const { mutate: signPersonalMessage } = useSignPersonalMessage();
   const { userService, authService } = useServices();

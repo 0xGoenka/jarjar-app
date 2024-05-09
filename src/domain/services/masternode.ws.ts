@@ -5,13 +5,12 @@ import { observable } from "micro-observables";
 export class MasternodeWS {
   masternode_ws: Socket | undefined;
   isGenerating = observable(false);
-  masternodeWsUrl = "jarjar-masternode.onrender.com";
   result = observable("");
 
   constructor() {}
 
-  connect(txId: string) {
-    this.masternode_ws = io(this.masternodeWsUrl);
+  connect(txId: string, url: string) {
+    this.masternode_ws = io(url);
     this.result.set("");
 
     this.masternode_ws.on("connect", () => {

@@ -71,9 +71,10 @@ export class TransactionService {
         amount,
         generation_input
       );
+      console.log({ mine });
       if (mine.error) return toast.error(mine.message || "Transaction failed");
       toast.info("Transaction sent!");
-      this.masternodeWs.connect(mine.txId);
+      this.masternodeWs.connect(mine.txId, mine.ws_public_url);
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message);

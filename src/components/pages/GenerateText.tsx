@@ -16,6 +16,7 @@ import { useServices } from "@/domain/core/services";
 import { useTransactionResult } from "@/domain/hooks/useTransactionService";
 import useKeypress from "react-use-keypress";
 import { useMasternodeWsService } from "@/domain/hooks/useMasternodeWsService";
+// import { useMasternodeWsService } from "jarjar-sdk-ts";
 
 const formSchema = z.object({
   system: z.string().min(10).max(4000),
