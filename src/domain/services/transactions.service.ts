@@ -75,6 +75,7 @@ export class TransactionService {
       if (mine.error) return toast.error(mine.message || "Transaction failed");
       toast.info("Transaction sent!");
       this.masternodeWs.connect(mine.txId, mine.ws_public_url);
+      toast.info("Connecting to Masternode...");
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message);
